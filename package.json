@@ -1,0 +1,13 @@
+{
+  "name": "usts",
+  "version": "0.0.0",
+  "type": "module",
+  "author": "GameRoMan",
+  "license": "MIT",
+  "scripts": {
+    "npm:publish": "bun publish"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.2"
+  }
+}
