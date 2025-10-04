@@ -4,16 +4,22 @@
   "type": "module",
   "author": "GameRoMan",
   "license": "MIT",
+  "exports": {
+    "./config": "./src/config/index.ts"
+  },
   "bin": {
     "usts": "./bin/cli.ts"
   },
   "scripts": {
     "npm:publish": "bun publish"
   },
-  "peerDependencies": {
-    "typescript": "^5.9.2"
+  "dependencies": {
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "rolldown": "^1.0.0-beta.41"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
   }
 }
