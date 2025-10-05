@@ -15,7 +15,7 @@ export const UserscriptHeaderConfigSchema = z.object({
 
   icon: z.optional(z.string()),
 
-  require: z.optional(z.union([z.string(), z.array(z.string())])),
+  require: z.optional(z.array(z.string())),
   resource: z.optional(z.union([z.string(), z.array(z.string())])),
 
   grant: z.optional(z.array(z.string())),
@@ -28,5 +28,7 @@ export const UserscriptHeaderConfigSchema = z.object({
 }) satisfies z.ZodType<UserscriptHeaderConfig>;
 
 export const UserscriptConfigSchema = z.object({
+  entryPoint: z.string(),
+  outDir: z.string(),
   header: UserscriptHeaderConfigSchema,
 }) satisfies z.ZodType<UserscriptConfig>;

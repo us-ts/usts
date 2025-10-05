@@ -10,7 +10,7 @@ export interface UserscriptHeaderConfig {
 
   icon?: string;
 
-  require?: string | string[];
+  require?: string[];
   resource?: string | string[];
 
   grant?: string[];
@@ -23,5 +23,7 @@ export interface UserscriptHeaderConfig {
 }
 
 export interface UserscriptConfig {
+  entryPoint: string;
+  outDir: string;
   header: UserscriptHeaderConfig;
 }

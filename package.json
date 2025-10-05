@@ -21,5 +21,9 @@
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "bun": ">=1.2.20"
   }
 }
