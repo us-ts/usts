@@ -22,6 +22,7 @@ async function buildUserscript(config: UserscriptConfig): Promise<void> {
     format: "esm",
     sourcemap: false,
     minify: "dce-only",
+    banner: header,
   });
 
   if (result.output.length !== 1) {
@@ -29,7 +30,7 @@ async function buildUserscript(config: UserscriptConfig): Promise<void> {
   }
 
   const bundledCode = result.output[0].code;
-  const fullCode = `${header}\n${bundledCode}`;
+  const fullCode = `${bundledCode}`;
 
   // -- Clean output directory --
   log("\n🧹 Cleaning output directory...");
