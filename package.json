@@ -5,9 +5,37 @@
   "author": "GameRoMan",
   "license": "MIT",
   "scripts": {
-    "npm:publish": "bun publish"
+    "build": "bunx tsdown",
+    "npm:publish": "bun run build && bun publish"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./bin/cli": "./dist/bin/cli.js",
+    "./config": "./dist/config.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "usts": "./dist/bin/cli.js"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "bun": ">=1.2.20"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "rolldown": "^1.0.0-beta.42",
+    "tsdown": "^0.15.6"
   },
   "peerDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }
