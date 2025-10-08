@@ -1,6 +1,6 @@
 type CLICommand = "help" | "build";
 
-type Flags = {} & Record<any, any>;
+type Flags = {} & Record<any, never>;
 
 interface Args {
   values: Flags;

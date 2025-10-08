@@ -1,125 +1,62 @@
-export * from "./build";
+import { buildUserscript } from "./build.js";
 
-import fs from "node:fs";
+import type { UserscriptConfig } from "~/schemas";
 
-import { fileURLToPath } from "node:url";
-
-// import {
-//   runHookBuildDone,
-//   runHookBuildStart,
-// } from "../../integrations/hooks.js";
-// import type { AstroSettings, RoutesList } from "../../types/astro.js";
-// import type { AstroInlineConfig } from "../../types/public/config.js";
-
-// import { resolveConfig } from "../config/config.js";
-
-// import { createSettings } from "../config/settings.js";
-
-// import { AstroError, AstroErrorData } from "../errors/index.js";
-
-// import { getServerIslandRouteData } from "../server-islands/endpoint.js";
-// import { clearContentLayerCache } from "../sync/index.js";
-
-// import { collectPagesData } from "./page-data.js";
+import { resolveConfig } from "../config";
 
 /**
- * Builds your site for deployment. By default, this will generate static files and place them in a dist/ directory.
- * If SSR is enabled, this will generate the necessary server files to serve your site.
- *
- * @experimental The JavaScript API is experimental
+ * Builds your userscript.
  */
-export default async function build(
-  // inlineConfig: AstroInlineConfig
-): Promise<void> {
-  // const { astroConfig } = await resolveConfig(inlineConfig, "build");
+export default async function build(): Promise<void> {
+  const { userscriptConfig, root } = await resolveConfig();
 
-  // const settings = await createSettings(
-  //   astroConfig,
-  //   fileURLToPath(astroConfig.root)
-  // );
-
-  // if (inlineConfig.force) {
-  //   // isDev is always false, because it's interested in the build command, not the output type
-  //   await clearContentLayerCache({ settings, fs, isDev: false });
-  // }
-
-  // const builder = new AstroBuilder(settings);
-  // await builder.run();
+  const builder = new AstroBuilder({ userscriptConfig, root });
+  await builder.run();
 }
 
-// class AstroBuilder {
-//   private settings: AstroSettings;
-//   private routesList: RoutesList;
+class AstroBuilder {
+  userscriptConfig: UserscriptConfig;
+  root: string;
 
-//   constructor(settings: AstroSettings) {
-//     this.settings = settings;
-//     this.routesList = { routes: [] };
-//   }
+  constructor({
+    userscriptConfig,
+    root,
+  }: {
+    userscriptConfig: UserscriptConfig;
+    root: string;
+  }) {
+    this.userscriptConfig = userscriptConfig;
+    this.root = root;
+  }
 
-//   /** Run the build logic. build() is marked private because usage should go through ".run()" */
-//   private async build() {
-//     await runHookBuildStart({
-//       config: this.settings.config,
-//     });
-//     this.validateConfig();
+  /** Run the build logic. build() is marked private because usage should go through ".run()" */
+  private async build() {
+    this.validateConfig();
+    console.log("----");
+    await buildUserscript(this.userscriptConfig);
+  }
 
-//     const { assets, allPages } = collectPagesData({
-//       settings: this.settings,
-//       manifest: this.routesList,
-//     });
+  /** Build the given Userscript. */
+  async run() {
+    try {
+      await this.build();
+    } catch (_err) {
+      throw _err;
+    } finally {
+    }
+  }
 
-//     /** The names of each pages */
-//     const pageNames: string[] = [];
+  private validateConfig() {
+    const outDir = this.userscriptConfig.outDir.toString();
+    const root = this.root.toString();
 
-//     // Bundle the assets in your final build: This currently takes the HTML output
-//     // of every page (stored in memory) and bundles the assets pointed to on those pages.
+    console.log({ outDir, root });
 
-//     const hasServerIslands = this.settings.serverIslandNameMap.size > 0;
-//     // Error if there are server islands but no adapter provided.
-//     if (hasServerIslands && this.settings.buildOutput !== "server") {
-//       throw new AstroError(AstroErrorData.NoAdapterInstalledServerIslands);
-//     }
-
-//     // Write any additionally generated assets to disk.
-//     Object.keys(assets).map((k) => {
-//       if (!assets[k]) return;
-//       const filePath = new URL(`file://${k}`);
-//       fs.mkdirSync(new URL("./", filePath), { recursive: true });
-//       fs.writeFileSync(filePath, assets[k], "utf8");
-//       delete assets[k]; //free up memory
-//     });
-
-//     // You're done! Time to clean up.
-//     await runHookBuildDone({
-//       settings: this.settings,
-//       pages: pageNames,
-//       routes: Object.values(allPages)
-//         .flat()
-//         .map((pageData) => pageData.route)
-//         .concat(
-//           hasServerIslands ? getServerIslandRouteData(this.settings.config) : []
-//         ),
-//     });
-//   }
-
-//   /** Build the given Astro project.  */
-//   async run() {
-//     try {
-//       await this.build();
-//     } catch (_err) {
-//       throw _err;
-//     } finally {
-//     }
-//   }
-
-//   private validateConfig() {
-//     const { config } = this.settings;
-
-//     // outDir gets blown away so it can't be the root.
-//     if (config.outDir.toString() === config.root.toString()) {
-//       throw new Error(
-//         `the outDir cannot be the root folder. Please build to a folder such as dist.`
-//       );
-//     }
-//   }
-// }
+    // outDir gets blown away so it can't be the root.
+    if (outDir === root) {
+      throw new Error(
+        `The outDir cannot be the root folder. Please build to a different folder such as dist.`
+      );
+    }
+  }
+}

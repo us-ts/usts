@@ -5,19 +5,24 @@
   "author": "GameRoMan",
   "license": "MIT",
   "exports": {
-    "./config": "./src/config/index.ts"
+    ".": "./dist/index.js",
+    "./bin/cli": "./dist/bin/cli.js",
+    "./config": "./dist/config.js",
+    "./package.json": "./package.json"
   },
   "bin": {
-    "usts": "./src/bin/cli.ts"
+    "usts": "./dist/bin/cli.js"
   },
   "scripts": {
+    "build": "bunx tsdown",
     "npm:publish": "bun publish"
   },
   "dependencies": {
-    "zod": "^4.1.11"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
-    "rolldown": "^1.0.0-beta.41"
+    "rolldown": "^1.0.0-beta.42",
+    "tsdown": "^0.15.6"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
@@ -25,5 +30,8 @@
   "engines": {
     "node": ">=24.0.0",
     "bun": ">=1.2.20"
-  }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts"
 }

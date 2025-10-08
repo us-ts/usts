@@ -8,6 +8,7 @@ async function printHelp() {
 /** Determine which command the user requested */
 function resolveCommand(parsedArgs: Args): CLICommand {
   const cmd = parsedArgs.positionals[2];
+
   if (!cmd) {
     return "help";
   }
@@ -34,7 +35,7 @@ async function runCommand(cmd: CLICommand, flags: Flags) {
     }
     case "build": {
       console.log("Building userscript");
-      const { build } = await import("./build");
+      const { build } = await import("./build/index.js");
       await build({ flags });
       return;
     }
@@ -49,10 +50,8 @@ export async function cli(argv: string[]) {
   const parsedArgs = parseArgs({ args: argv, allowPositionals: true });
   const cmd = resolveCommand(parsedArgs);
   try {
-    await runCommand(cmd, parsedArgs);
+    await runCommand(cmd, parsedArgs.values);
   } catch (err) {
     throw err;
-    // const { throwAndExit } = await import("./throw-and-exit.js");
-    // await throwAndExit(cmd, err);
   }
 }

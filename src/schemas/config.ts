@@ -1,14 +1,13 @@
 import { z } from "zod";
 
-import type { UserscriptConfig, UserscriptHeaderConfig } from "../types";
-
-export const UserscriptHeaderConfigSchema = z.object({
+const UserscriptMetaHeaderConfigSchema = z.object({
   name: z.string(),
   namespace: z.string(),
 
-  author: z.optional(z.string()),
   version: z.string(),
   description: z.string(),
+
+  author: z.optional(z.string()),
   license: z.optional(z.string()),
 
   match: z.union([z.string(), z.array(z.string())]),
@@ -25,10 +24,23 @@ export const UserscriptHeaderConfigSchema = z.object({
 
   supportURL: z.optional(z.string()),
   homepageURL: z.optional(z.string()),
-}) satisfies z.ZodType<UserscriptHeaderConfig>;
+});
 
-export const UserscriptConfigSchema = z.object({
+type UserscriptMetaHeaderConfig = z.infer<
+  typeof UserscriptMetaHeaderConfigSchema
+>;
+
+const UserscriptConfigSchema = z.object({
   entryPoint: z.string(),
   outDir: z.string(),
-  header: UserscriptHeaderConfigSchema,
-}) satisfies z.ZodType<UserscriptConfig>;
+  header: UserscriptMetaHeaderConfigSchema,
+});
+
+type UserscriptConfig = z.infer<typeof UserscriptConfigSchema>;
+
+export {
+  UserscriptMetaHeaderConfigSchema,
+  UserscriptConfigSchema,
+  type UserscriptMetaHeaderConfig,
+  type UserscriptConfig,
+};

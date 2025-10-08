@@ -2,11 +2,7 @@
 "use strict";
 
 const minSupportedNodeVersion = 24;
-
-const supportedVersions = {
-  node: ">=24.0.0",
-  bun: ">=1.2.20",
-};
+const supportedBunVersion = ">=1.2.20";
 
 /** `usts *` */
 async function main() {
@@ -15,7 +11,7 @@ async function main() {
   if (bunVersion) {
     try {
       const { semver } = await import("bun");
-      if (!semver.satisfies(bunVersion, supportedVersions.bun)) {
+      if (!semver.satisfies(bunVersion, supportedBunVersion)) {
         await errorUnsupportedBunVersion();
         return;
       }
@@ -31,7 +27,7 @@ async function main() {
     }
   }
 
-  return import("../cli")
+  return import("../cli/index.js")
     .then(({ cli }) => cli(process.argv))
     .catch((error) => {
       console.error(error);
@@ -43,6 +39,7 @@ async function errorUnsupportedBunVersion() {
   console.error(`Unsupported Bun version. Please upgrade Bun.\n`);
   process.exit(1);
 }
+
 async function errorUnsupportedNodeVersion() {
   console.error(`Unsupported Node version. Please upgrade Node or use Bun.\n`);
   process.exit(1);
