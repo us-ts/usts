@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 "use strict";
 
-const minSupportedNodeVersion = 24;
+const minSupportedNodeVersion = 22;
 const supportedBunVersion = ">=1.2.20";
 
 /** `usts *` */

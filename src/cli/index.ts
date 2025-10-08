@@ -1,5 +1,5 @@
 import { parseArgs } from "node:util";
-import type { Args, CLICommand, Flags } from "./types";
+import type { Args, CLICommand } from "./types";
 
 async function printHelp() {
   console.log("Run `usts build` to build a userscript");
@@ -26,7 +26,7 @@ function resolveCommand(parsedArgs: Args): CLICommand {
  * NOTE: This function provides no error handling, so be sure
  * to present user-friendly error output where the fn is called.
  **/
-async function runCommand(cmd: CLICommand, flags: Flags) {
+async function runCommand(cmd: CLICommand) {
   // These commands can run directly without parsing the user config.
   switch (cmd) {
     case "help": {
@@ -36,7 +36,7 @@ async function runCommand(cmd: CLICommand, flags: Flags) {
     case "build": {
       console.log("Building userscript");
       const { build } = await import("./build/index.js");
-      await build({ flags });
+      await build();
       return;
     }
   }
@@ -50,7 +50,7 @@ export async function cli(argv: string[]) {
   const parsedArgs = parseArgs({ args: argv, allowPositionals: true });
   const cmd = resolveCommand(parsedArgs);
   try {
-    await runCommand(cmd, parsedArgs.values);
+    await runCommand(cmd);
   } catch (err) {
     throw err;
   }

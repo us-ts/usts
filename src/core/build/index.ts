@@ -10,11 +10,11 @@ import { resolveConfig } from "../config";
 export default async function build(): Promise<void> {
   const { userscriptConfig, root } = await resolveConfig();
 
-  const builder = new AstroBuilder({ userscriptConfig, root });
+  const builder = new UserscriptBuilder({ userscriptConfig, root });
   await builder.run();
 }
 
-class AstroBuilder {
+class UserscriptBuilder {
   userscriptConfig: UserscriptConfig;
   root: string;
 
@@ -32,7 +32,6 @@ class AstroBuilder {
   /** Run the build logic. build() is marked private because usage should go through ".run()" */
   private async build() {
     this.validateConfig();
-    console.log("----");
     await buildUserscript(this.userscriptConfig);
   }
 
@@ -40,9 +39,8 @@ class AstroBuilder {
   async run() {
     try {
       await this.build();
-    } catch (_err) {
-      throw _err;
-    } finally {
+    } catch (err) {
+      throw err;
     }
   }
 
@@ -50,12 +48,10 @@ class AstroBuilder {
     const outDir = this.userscriptConfig.outDir.toString();
     const root = this.root.toString();
 
-    console.log({ outDir, root });
-
     // outDir gets blown away so it can't be the root.
     if (outDir === root) {
       throw new Error(
-        `The outDir cannot be the root folder. Please build to a different folder such as dist.`
+        "The outDir cannot be the root folder. Please build to a different folder."
       );
     }
   }

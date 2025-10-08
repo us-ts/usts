@@ -3,9 +3,7 @@ import type { UserscriptMetaHeaderConfig } from "~/schemas";
 const headerStart = "// ==UserScript==" as const;
 const headerEnd = "// ==/UserScript==" as const;
 
-type HeaderKey = `${string}`;
-type HeaderVal = `${string}`;
-type HeaderLine = `// @${HeaderKey}` | `// @${HeaderKey} ${HeaderVal}`;
+type HeaderLine = `// @${string}`;
 
 function getHeaderLine(key: string, val: string | boolean): HeaderLine {
   if (typeof val === "boolean") return `// @${key}`;
@@ -15,18 +13,21 @@ function getHeaderLine(key: string, val: string | boolean): HeaderLine {
 
 function getHeaderLines(
   key: string,
-  val: unknown | undefined | string | string[] | boolean
+  val: string | string[] | boolean
 ): HeaderLine[] {
-  if (val === undefined) return [];
   if (Array.isArray(val)) return val.map((v) => getHeaderLine(key, v));
   if (typeof val === "string") return [getHeaderLine(key, val)];
   if (typeof val === "boolean") return [getHeaderLine(key, val)];
   throw new Error(`Unknown header value type: ${typeof val}`);
 }
 
-export function serializeMetaHeader(headerConfig: UserscriptMetaHeaderConfig): {
+interface SerializeMetaHeaderResult {
   serializedHeader: string;
-} {
+}
+
+export function serializeMetaHeader(
+  headerConfig: UserscriptMetaHeaderConfig
+): SerializeMetaHeaderResult {
   const headerConfigEntries = Object.entries(headerConfig);
   const extraHeaderLines = headerConfigEntries.flatMap(([key, val]) =>
     getHeaderLines(key, val)

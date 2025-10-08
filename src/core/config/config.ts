@@ -9,10 +9,6 @@ import type { UserscriptConfig } from "~/schemas";
 
 import { validateConfig } from "./validate";
 
-export function resolveRoot(): string {
-  return process.cwd();
-}
-
 // Config paths to search for.
 const configPaths = Object.freeze([
   "userscript.config.ts",
@@ -33,24 +29,18 @@ async function search(root: string) {
   }
 }
 
-interface ResolveConfigPathOptions {
-  root: string;
-}
-
 /**
  * Resolve the file URL of the user's `userscript.config.js|cjs|mjs|ts` file
  */
 export async function resolveConfigPath(
-  options: ResolveConfigPathOptions
+  root: string
 ): Promise<string | undefined> {
-  let userConfigPath: string | undefined;
-  userConfigPath = await search(options.root);
-
+  const userConfigPath = await search(root);
   return userConfigPath;
 }
 
 async function loadConfig(root: string): Promise<Record<string, any>> {
-  const configPath = await resolveConfigPath({ root });
+  const configPath = await resolveConfigPath(root);
   if (!configPath) return {};
 
   try {
@@ -69,21 +59,16 @@ interface ResolveConfigResult {
   root: string;
 }
 
-/**
- * Resolves the Userscript config.
- */
 export async function resolveConfig(): Promise<ResolveConfigResult> {
-  const root = resolveRoot();
+  const root = process.cwd();
   const userConfig = await loadConfig(root);
-  let userscriptConfig: UserscriptConfig;
   try {
-    userscriptConfig = validateConfig(userConfig, root);
+    const userscriptConfig = validateConfig(userConfig, root);
+    return { userscriptConfig, root };
   } catch (e) {
     if (e instanceof ZodError) {
       console.error(e);
     }
     throw e;
   }
-
-  return { userscriptConfig, root };
 }
