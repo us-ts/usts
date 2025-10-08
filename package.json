@@ -6,8 +6,13 @@
   "license": "MIT",
   "scripts": {
     "build": "bunx tsdown",
-    "npm:publish": "bun publish"
+    "npm:publish": "bun run build && bun publish"
   },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
