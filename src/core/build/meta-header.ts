@@ -21,18 +21,23 @@ function getHeaderLines(
   throw new Error(`Unknown header value type: ${typeof val}`);
 }
 
+type SerializeMetaHeader = `// ==UserScript==
+${string}
+// ==/UserScript==`;
+
 interface SerializeMetaHeaderResult {
-  serializedHeader: string;
+  serializedHeader: SerializeMetaHeader;
 }
 
 export function serializeMetaHeader(
   headerConfig: UserscriptMetaHeaderConfig
 ): SerializeMetaHeaderResult {
   const headerConfigEntries = Object.entries(headerConfig);
-  const extraHeaderLines = headerConfigEntries.flatMap(([key, val]) =>
+  const headerLines = headerConfigEntries.flatMap(([key, val]) =>
     getHeaderLines(key, val)
   );
-  const headerLines = [headerStart, ...extraHeaderLines, headerEnd] as const;
-  const serializedHeader = headerLines.join("\n");
+  const serializedHeaderLines = headerLines.join("\n");
+  const serializedHeader =
+    `${headerStart}\n${serializedHeaderLines}\n${headerEnd}` as const;
   return { serializedHeader };
 }

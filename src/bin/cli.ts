@@ -4,7 +4,6 @@
 const minSupportedNodeVersion = 22;
 const supportedBunVersion = ">=1.2.20";
 
-/** `usts *` */
 async function main() {
   const bunVersion = process.versions.bun;
 
@@ -12,18 +11,16 @@ async function main() {
     try {
       const { semver } = await import("bun");
       if (!semver.satisfies(bunVersion, supportedBunVersion)) {
-        await errorUnsupportedBunVersion();
-        return;
+        throw new Error("Unsupported Bun version. Please upgrade Bun.");
       }
     } catch {
-      await errorUnsupportedBunVersion();
-      return;
+      console.error("Unsupported Bun version. Please upgrade Bun.");
+      throw new Error("Unsupported Bun version. Please upgrade Bun.");
     }
   } else {
     const version = parseInt(process.versions.node) || 0;
     if (version < minSupportedNodeVersion) {
-      await errorUnsupportedNodeVersion();
-      return;
+      throw new Error("Unsupported Node version. Please upgrade Node.\n");
     }
   }
 
@@ -33,16 +30,6 @@ async function main() {
       console.error(error);
       process.exit(1);
     });
-}
-
-async function errorUnsupportedBunVersion() {
-  console.error(`Unsupported Bun version. Please upgrade Bun.\n`);
-  process.exit(1);
-}
-
-async function errorUnsupportedNodeVersion() {
-  console.error(`Unsupported Node version. Please upgrade Node or use Bun.\n`);
-  process.exit(1);
 }
 
 main()

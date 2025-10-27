@@ -9,7 +9,6 @@ import type { UserscriptConfig } from "~/schemas";
 
 import { validateConfig } from "./validate";
 
-// Config paths to search for.
 const configPaths = Object.freeze([
   "userscript.config.ts",
   "userscript.config.js",
@@ -29,9 +28,6 @@ async function search(root: string) {
   }
 }
 
-/**
- * Resolve the file URL of the user's `userscript.config.js|cjs|mjs|ts` file
- */
 export async function resolveConfigPath(
   root: string
 ): Promise<string | undefined> {

@@ -22,7 +22,7 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "usts": "./dist/bin/cli.js"
+    "usts": "./dist/bin/cli/index.js"
   },
   "engines": {
     "node": ">=22.0.0",

@@ -1,5 +1,3 @@
-/// <reference types="node" />
-
 import { rolldown } from "rolldown";
 
 import * as path from "node:path";
@@ -7,11 +5,13 @@ import * as fs from "node:fs/promises";
 
 import type { UserscriptConfig } from "~/schemas";
 
-import { serializeMetaHeader } from "./meta-header.js";
+import { serializeMetaHeader } from "./meta-header";
 
 const USERSCRIPT_OUTPUT_FILE_NAME = "index.user.js";
 
 async function buildUserscript(config: UserscriptConfig): Promise<void> {
+  console.log("\n⚒️ Building userscript");
+
   const header = serializeMetaHeader(config.header).serializedHeader;
 
   const bundle = await rolldown({ input: config.entryPoint });
@@ -26,9 +26,9 @@ async function buildUserscript(config: UserscriptConfig): Promise<void> {
   }
 
   const bundledCode = result.output[0].code;
-  const fullCode = `${header}\n\n${bundledCode}`;
+  const fullCode = `${header}\n\n${bundledCode}` as const;
 
-  console.log("\n🧹 Cleaning output directory...");
+  console.log("\n🧹 Cleaning output directory");
   const outDir = config.outDir;
   await fs.rm(outDir, { recursive: true, force: true });
   await fs.mkdir(outDir, { recursive: true });
